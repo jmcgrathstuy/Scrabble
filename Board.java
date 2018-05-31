@@ -26,6 +26,14 @@ public class Board{
         brd[x][y] = null;
 	return a;
     }
+
+    //toString
+    public String toString(){
+	String str = "";
+	for( int sR = 0; sR < 15; sR++){
+	    for( int sC = 0; sC < 15; sC++){
+		if( 
+	
     
     //Sets brd as a new, empty 15x15 board
     public void clearBoard(){
