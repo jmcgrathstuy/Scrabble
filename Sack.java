@@ -1,8 +1,12 @@
+import java.util.*;
+import java.io.*;
+
 public class Sack{
 
-    private ArrayList<Piece> sck;
+    private ArrayList<Piece>  sck;
 
     public Sack(){
+	sck = new ArrayList<Piece>();
 
 	for( int i = 1; i < 13; i++){
 	   sck.add( new Piece( 'E', 1));
@@ -44,14 +48,25 @@ public class Sack{
 	   sck.add( new Piece( 'Q', 10));
 	   sck.add( new Piece( 'Z', 10));
 	}
+    }
+    //returns, but does not remove, piece at position i
+    public Piece getPiece(int i){
+	return sck.get(i);
+    }
 
+    public Piece drawPiece(){
+	Random r = new Random(0, 98);
+	int i = r.nextInt();
+	return sck.get(i);
+    }
+
+    public static void main (String[] args){
+	Sack s = new Sack();
+	System.out.println(s.drawPiece());
     }
 
 
+    
 
-
-
-
-
-
+    
 }
