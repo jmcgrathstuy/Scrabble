@@ -42,12 +42,15 @@ public class Sack{
 	       sck.add( new Piece( 'V', 4));
 	       sck.add( new Piece( 'W', 4));
 	       sck.add( new Piece( 'Y', 4));
+	       sck.add( new Piece( 'b', 0));
 	   }
+	   if( i < 2){
 	   sck.add( new Piece( 'K', 5));
 	   sck.add( new Piece( 'J', 8));
 	   sck.add( new Piece( 'X', 8));
 	   sck.add( new Piece( 'Q', 10));
 	   sck.add( new Piece( 'Z', 10));
+	   }
 	}
     }
     //returns, but does not remove, piece at position i
