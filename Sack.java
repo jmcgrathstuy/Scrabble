@@ -60,7 +60,7 @@ public class Sack{
 
     //Selects a random Piece, removes it, and returns it
     public Piece drawPiece(){
-	int i = (int)((Math.random() * 100) + 1);
+	int i = (int)((Math.random() * (size()) ));
 	//int i = Math.Random(100);
         Piece a = sck.get(i);
 	sck.remove(i);
@@ -123,9 +123,9 @@ public class Sack{
 	Sack s = new Sack();
 	System.out.println( s.size());
 	//System.out.println(s.drawPiece());
-	/*for( int i = 0; i < 101; i++){
+	for( int i = 0; i < 100; i++){
 	    System.out.println(""+ i + s.drawPiece());
-	    }*/
+	    }
     }
 
 
