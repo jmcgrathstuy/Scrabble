@@ -59,7 +59,12 @@ public class Sack{
     public Piece drawPiece(){
 	int i = (int)((Math.random() * 100) + 1);
 	//int i = Math.Random(100);
-	return sck.get(i);
+        Piece a = sck.get(i);
+	sck.remove(i);
+	return a;
+    }
+    public int size(){
+	return sck.size();
     }
     //Empties the sack
     public void clear(){
@@ -68,7 +73,7 @@ public class Sack{
     //Empties and refills the sack
     public void reset(){
 	clear();
-		for( int i = 1; i < 13; i++){
+	for( int i = 1; i < 13; i++){
 	   sck.add( new Piece( 'E', 1));
 	   if( i < 10){
 	       sck.add( new Piece( 'A', 1));
@@ -113,7 +118,11 @@ public class Sack{
 
     public static void main (String[] args){
 	Sack s = new Sack();
-	System.out.println(s.drawPiece());
+	System.out.println( s.size());
+	//System.out.println(s.drawPiece());
+	/*for( int i = 0; i < 101; i++){
+	    System.out.println(""+ i + s.drawPiece());
+	    }*/
     }
 
 
