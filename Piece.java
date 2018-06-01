@@ -11,6 +11,9 @@ public class Piece{
 	value = val;
 	removable = true;
     }
+    public String toString(){
+	return ("Letter: " + letter + ", Value: " + value);
+    }
 
     //All methods self-explanatory
     public void setLetter(char let){

@@ -1,5 +1,6 @@
 import java.util.*;
 import java.io.*;
+//import java.lang.*;
 
 public class Sack{
 
@@ -54,9 +55,10 @@ public class Sack{
 	return sck.get(i);
     }
 
+    //Selects a random Piece, removes it, and returns it
     public Piece drawPiece(){
-	Random r = new Random(0, 98);
-	int i = r.nextInt();
+	int i = (int)((Math.random() * 100) + 1);
+	//int i = Math.Random(100);
 	return sck.get(i);
     }
 
