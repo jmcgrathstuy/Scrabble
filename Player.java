@@ -8,6 +8,8 @@ public class Player{
     public Player(String inName){
 	name = inName;
 	score = 0;
+	hand = new ArrayList<Piece>();
+    }
 	
 
     
