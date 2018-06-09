@@ -24,7 +24,7 @@ public void setup(){
   sck = new Sack();
   brd = new Board();
   p = new Player("Jack");
-  p.fillHand(sck);
+  //p.fillHand(sck);
   f = createFont("Arial", 16, true);
   boxWidth = 35;
   boxHeight = 35;
@@ -77,7 +77,6 @@ public void draw(){
     p.addScore(turnPoints);
     turnPoints = 0;
     p.fillHand(sck);
-    println(p.getScore());
   }
   
   
