@@ -73,15 +73,15 @@ public void draw(){
     selectedPieceSpot = 0;
   }
   
-  //END TURN AND RECEIVE POINTS
+  //START TURN
   if( ((  mouseX > 536 && mouseX < 663 && ( mouseY > 9 && mouseY < 89)) && mousePressed)){
     turnPoints = 0;
     p.fillHand(sck);
   }
+  //END TURN
   if( ((  mouseX > 536 && mouseX < 663 && ( mouseY > 102 && mouseY < 182)) && mousePressed)){
     p.addScore(turnPoints);
     turnPoints = 0;
-    p.fillHand(sck);
   }
   println(p.getScore());
   
@@ -133,7 +133,7 @@ public class Player{
     //don't need a fillHand() method, driver will do that ( i think)
   
   public void fillHand(Sack s){
-    for( int i = hand.size(); i < 7; i++){
+    for( int i = hand.size(); i < 7 && sck.size() > 0; i++){
       addPiece( s.drawPiece());
     }
   }
@@ -566,23 +566,29 @@ public class Sack{
     }
 
     //Selects a random Piece, removes it, and returns it
-    public Piece drawPiece(){
-  int i = (int)((Math.random() * (size()) ));
-  //int i = Math.Random(100);
-        Piece a = sck.get(i);
-  sck.remove(i);
-  return a;
+  public Piece drawPiece(){
+    if( size() == 0){
+      return null;
     }
-    public int size(){
-  return sck.size();
-    }
-    //Empties the sack
-    public void clear(){
-  sck.clear();
-    }
-    //Empties and refills the sack
+    int i = (int)((Math.random() * (size()) ));
+    //int i = Math.Random(100);
+    Piece a = sck.get(i);
+    sck.remove(i);
+    return a;
+  }
+  
+  public int size(){
+    return sck.size();
+  }
+  
+  //Empties the sack
+  public void clear(){
+    sck.clear();
+  }
+  
+  //Empties and refills the sack
   public void reset(){
-  clear();
+    clear();
   for( int i = 1; i < 13; i++){
      sck.add( new Piece( 'E', 1));
      if( i < 10){
