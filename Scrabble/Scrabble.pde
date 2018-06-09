@@ -18,8 +18,8 @@ PImage bg;
 
 
 public void setup(){
-  size(525, 600);
-  bg = loadImage("WWFBoard525.png");
+  size(526, 600);
+  bg = loadImage("WWFBoard.png");
   background(bg);
   sck = new Sack();
   brd = new Board();
@@ -68,11 +68,7 @@ public void draw(){
     }
   }
   //PIECE PLACEMENT
-  if(mousePressed && mouseY < 526){
-    println("yeet" + (brd.getBoard()[mouseY / 35][mouseX / 35] == null));
-    println(brd.getBoard()[mouseY / 35][mouseX / 35]);
-  }
-  if( (( (mouseY < 526) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseX / 35][mouseY / 35] == null){
+  if( (( ((mouseY < 526)&&(mouseX < 524)) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseX / 35][mouseY / 35] == null){
     brd.placePiece(p.getHand().remove(selectedPieceSpot), mouseX / 35, mouseY / 35);
     selectedPiece = null;
     selectedPieceSpot = 0;
