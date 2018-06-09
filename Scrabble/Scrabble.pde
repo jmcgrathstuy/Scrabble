@@ -68,7 +68,7 @@ public void draw(){
     }
   }
   //PIECE PLACEMENT
-  if( (( ((mouseY < 526)&&(mouseX < 524)) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseX / 35][mouseY / 35] == null){
+  if( (( (((mouseY < 526)&&(mouseY>1))&&((mouseX < 524)&&(mouseX > 1))) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseX / 35][mouseY / 35] == null){
     brd.placePiece(p.getHand().remove(selectedPieceSpot), mouseX / 35, mouseY / 35);
     selectedPiece = null;
     selectedPieceSpot = 0;
