@@ -74,10 +74,15 @@ public void draw(){
   
   //END TURN AND RECEIVE POINTS
   if( ((  mouseX > 536 && mouseX < 663 && ( mouseY > 9 && mouseY < 89)) && mousePressed)){
+    turnPoints = 0;
+    p.fillHand(sck);
+  }
+  if( ((  mouseX > 536 && mouseX < 663 && ( mouseY > 102 && mouseY < 182)) && mousePressed)){
     p.addScore(turnPoints);
     turnPoints = 0;
     p.fillHand(sck);
   }
+  println(p.getScore());
   
   
   //println("selectedPiece: " + selectedPiece);
