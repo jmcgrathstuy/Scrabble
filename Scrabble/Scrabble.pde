@@ -67,6 +67,7 @@ public void draw(){
   //PIECE PLACEMENT
   if( (( (((mouseY < 526)&&(mouseY>1))&&((mouseX < 524)&&(mouseX > 1))) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseX / 35][mouseY / 35] == null){
     turnPoints += selectedPiece.getValue();
+    //NOTE!! THE ABOVE WAY OF ADDING POINTS PROBABLY WON'T WORK WITH WORD SCORE MODIFIERS (THEN AGAIN THE CURRENT SCORING SYSTEM IS A PLACEHOLDER SO WHO KNOWS IF THAT MATTERS)
     brd.placePiece(p.getHand().remove(selectedPieceSpot), mouseX / 35, mouseY / 35);
     selectedPiece = null;
     selectedPieceSpot = 0;
