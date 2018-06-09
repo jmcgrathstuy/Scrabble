@@ -4,10 +4,22 @@ Player p;
 PFont f;
 int boxWidth, boxHeight;
 Piece selectedPiece;
+int selectedPieceSpot;
+PImage bg;
+
+//SETUP
+//DRAW
+
+
+//PLAYER
+//BOARD
+//PIECE
+//SACK
+
 
 public void setup(){
   size(526, 600);
-  PImage bg = loadImage("WWFBoard.png");
+  bg = loadImage("WWFBoard.png");
   background(bg);
   sck = new Sack();
   brd = new Board();
@@ -21,9 +33,13 @@ public void setup(){
 }
 
 public void draw(){
+  background(bg);
   int a = 5;
   //int a = 0;
   textFont(f, 16);
+  if( p.getHandSize() == 0){
+    p.fillHand(sck);
+  }
   for( Piece s : p.getHand()){
     s.setX( a);
     s.setY( 532);
@@ -31,9 +47,10 @@ public void draw(){
     a += 70;
     //a += 35;
     s.display();
-    
+    //PIECE SELECTION
     if( ((  mouseX > ( s.getX()) && mouseX < (s.getX() + 60)) && ( mouseY > ( s.getY()) && mouseY < (s.getY() + 60))) && mousePressed){
       selectedPiece = s;
+      selectedPieceSpot = p.getHand().indexOf(s);
     }
       
   }
@@ -43,18 +60,33 @@ public void draw(){
         fill( 0, 0.0);
         rect( rc * boxWidth, cc * boxHeight, boxWidth, boxHeight);
       }
+      else{
+        brd.getBoard()[rc][cc].setY(cc * 35);
+        brd.getBoard()[rc][cc].setX(rc * 35);
+        brd.getBoard()[rc][cc].displaySmall();
+      }
     }
   }
-  println(selectedPiece);
+  //PIECE PLACEMENT
+  if( (( (mouseY < 526) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseY / 35][mouseX / 35] == null){
+    brd.placePiece(p.getHand().remove(selectedPieceSpot), mouseX / 35, mouseY / 35);
+    selectedPiece = null;
+    selectedPieceSpot = 0;
+  }
+  
+  
+  println("selectedPiece: " + selectedPiece);
+  println("[0][0]: " + brd.getBoard()[0][0]);
+  println("[0][1]: " + brd.getBoard()[0][1]);
   
 }
 
 
 
     //Given a coordinate returns the relevant x or y spot in the array
-    public static int relSpot(int coord){
-      return coord / 35;
-    }
+    //public static int relSpot(int coord){
+    //  return coord / 35;
+    //}
 
 
 
@@ -75,9 +107,9 @@ public class Player{
     
 
     public Player(String inName){
-  name = inName;
-  score = 0;
-  hand = new ArrayList<Piece>();
+    name = inName;
+    score = 0;
+    hand = new ArrayList<Piece>();
     }
 
     //notes to self:
@@ -88,11 +120,11 @@ public class Player{
       addPiece( s.drawPiece());
     }
   }
-      
-
-    public void setName( String n){
-  name = n;
-    }
+  
+  public void setName( String n){
+      name = n;
+  }
+    
   public boolean addPiece(Piece p){
     if(getHandSize() > 6){
       return false;
@@ -103,24 +135,29 @@ public class Player{
     }
   }
       
-    public String getName(){
-  return name;
-    }
+  public String getName(){
+    return name;
+  }
+  
   public int getHandSize(){
     return hand.size();
   }
-    public void setScore( int s){
-  score = s;
-    }
-    public void addScore( int s){
-        score =+ s;
-    }
-    public int getScore(){
-  return score;
-    }
-    public ArrayList<Piece> getHand(){
-      return hand;
-    }
+  
+  public void setScore( int s){
+    score = s;
+  }
+  
+  public void addScore( int s){
+    score =+ s;
+  }
+  
+  public int getScore(){
+    return score;
+  }
+  
+  public ArrayList<Piece> getHand(){
+    return hand;
+  }
 }
 
 
