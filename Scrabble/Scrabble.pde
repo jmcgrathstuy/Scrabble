@@ -2,35 +2,59 @@ Board brd;
 Sack sck;
 Player p;
 PFont f;
+int boxWidth, boxHeight;
+Piece selectedPiece;
 
 public void setup(){
   size(526, 600);
   PImage bg = loadImage("WWFBoard.png");
   background(bg);
   sck = new Sack();
+  brd = new Board();
   p = new Player("Jack");
   p.fillHand(sck);
-  f = createFont("Arial", 160, true);
+  f = createFont("Arial", 16, true);
+  boxWidth = 35;
+  boxHeight = 35;
+  
   
 }
 
 public void draw(){
   int a = 5;
+  //int a = 0;
   textFont(f, 16);
   for( Piece s : p.getHand()){
-    fill(255);
     s.setX( a);
     s.setY( 532);
+    //s.setY(0);
     a += 70;
+    //a += 35;
     s.display();
-    fill(0);
-    text(s.getLetter(), s.getX() + 15, s.getY() + 15);
+    
+    if( ((  mouseX > ( s.getX()) && mouseX < (s.getX() + 60)) && ( mouseY > ( s.getY()) && mouseY < (s.getY() + 60))) && mousePressed){
+      selectedPiece = s;
+    }
+      
   }
+  for( int rc = 0; rc < 15; rc++){
+    for( int cc = 0; cc < 15; cc++){
+      if( brd.getBoard()[rc][cc] == null){
+        fill( 0, 0.0);
+        rect( rc * boxWidth, cc * boxHeight, boxWidth, boxHeight);
+      }
+    }
+  }
+  println(selectedPiece);
+  
 }
 
 
 
-
+    //Given a coordinate returns the relevant x or y spot in the array
+    public static int relSpot(int coord){
+      return coord / 35;
+    }
 
 
 
@@ -122,6 +146,13 @@ public class Board{
   return brd[x][y] == null;
     }
     
+    //Returns brd
+    public Piece[][] getBoard(){
+      return brd;
+    }
+
+    
+    
     //If space is empty, places said piece in brd[x][y]. Otherwise returns false.
     public boolean placePiece(Piece p, int x, int y){
   if( !isEmpty(x, y)){
@@ -170,14 +201,9 @@ public class Board{
     public void clearBoard(){
   brd = new Piece[15][15];
     }
-
-    //UNWRITTEN
     //Returns an int describing the Specialty level of brd[x][y]
     //Normal space = 0//DL = 1//DW = 2//TL = 3//TW = 4
     public int specialty(int x, int y){
-  //series of ifs to see if it is one of the special spots
-  //OR add a list to this class of special coords and loop through that?
-  //either way writing this will be easy but time consuming
   if(       ( x == 1 && y == 2)
          || ( x == 1 && y == 12)
          || ( x == 2 && y == 1)
@@ -399,9 +425,24 @@ public class Piece{
       return y;
     }
     public void display(){
-      
+      fill(252, 217, 103);
       rect(x, y, 60, 60);
-}
+      fill(0);
+      textSize(48);
+      text(getLetter(), getX() + 7, getY() + 45);
+      textSize(12);
+      text(getValue(), getX() + 46, getY() + 55);
+    }
+    
+    public void displaySmall(){
+      fill(252, 217, 103);
+      rect(x, y, 35, 35);
+      fill(0);
+      textSize(26);
+      text(getLetter(), getX() + 3, getY() + 27);
+      textSize(10);
+      text(getValue(), getX() + 23, getY() + 31);
+    }
 }
 
 
