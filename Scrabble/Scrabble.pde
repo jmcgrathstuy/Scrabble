@@ -18,8 +18,8 @@ PImage bg;
 
 
 public void setup(){
-  size(526, 600);
-  bg = loadImage("WWFBoard.png");
+  size(525, 600);
+  bg = loadImage("WWFBoard525.png");
   background(bg);
   sck = new Sack();
   brd = new Board();
@@ -68,16 +68,26 @@ public void draw(){
     }
   }
   //PIECE PLACEMENT
-  if( (( (mouseY < 526) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseY / 35][mouseX / 35] == null){
+  if(mousePressed && mouseY < 526){
+    println("yeet" + (brd.getBoard()[mouseY / 35][mouseX / 35] == null));
+    println(brd.getBoard()[mouseY / 35][mouseX / 35]);
+  }
+  if( (( (mouseY < 526) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseX / 35][mouseY / 35] == null){
     brd.placePiece(p.getHand().remove(selectedPieceSpot), mouseX / 35, mouseY / 35);
     selectedPiece = null;
     selectedPieceSpot = 0;
   }
   
   
-  println("selectedPiece: " + selectedPiece);
-  println("[0][0]: " + brd.getBoard()[0][0]);
-  println("[0][1]: " + brd.getBoard()[0][1]);
+  //println("selectedPiece: " + selectedPiece);
+  //println("[0][0]: " + brd.getBoard()[0][0]);
+  //println("[0][1]: " + brd.getBoard()[0][1]);
+  
+  /*if(mousePressed){
+    println("" + (mouseY / 35) +" "+ (mouseX / 35));
+    println("yeet" + ((( (mouseY < 526) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseY / 35][mouseX / 35] == null));
+  }*/
+  
   
 }
 
