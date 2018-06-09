@@ -4,7 +4,7 @@ Player p;
 PFont f;
 int boxWidth, boxHeight;
 Piece selectedPiece;
-int selectedPieceSpot;
+int selectedPieceSpot, turnPoints;
 PImage bg;
 
 //SETUP
@@ -18,7 +18,7 @@ PImage bg;
 
 
 public void setup(){
-  size(526, 600);
+  size(673, 600);
   bg = loadImage("WWFBoard.png");
   background(bg);
   sck = new Sack();
@@ -28,7 +28,7 @@ public void setup(){
   f = createFont("Arial", 16, true);
   boxWidth = 35;
   boxHeight = 35;
-  
+  turnPoints = 0;
   
 }
 
@@ -37,9 +37,6 @@ public void draw(){
   int a = 5;
   //int a = 0;
   textFont(f, 16);
-  if( p.getHandSize() == 0){
-    p.fillHand(sck);
-  }
   for( Piece s : p.getHand()){
     s.setX( a);
     s.setY( 532);
@@ -69,9 +66,18 @@ public void draw(){
   }
   //PIECE PLACEMENT
   if( (( (((mouseY < 526)&&(mouseY>1))&&((mouseX < 524)&&(mouseX > 1))) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseX / 35][mouseY / 35] == null){
+    turnPoints += selectedPiece.getValue();
     brd.placePiece(p.getHand().remove(selectedPieceSpot), mouseX / 35, mouseY / 35);
     selectedPiece = null;
     selectedPieceSpot = 0;
+  }
+  
+  //END TURN AND RECEIVE POINTS
+  if( ((  mouseX > 536 && mouseX < 663 && ( mouseY > 9 && mouseY < 89)) && mousePressed)){
+    p.addScore(turnPoints);
+    turnPoints = 0;
+    p.fillHand(sck);
+    println(p.getScore());
   }
   
   
@@ -154,7 +160,7 @@ public class Player{
   }
   
   public void addScore( int s){
-    score =+ s;
+    score += s;
   }
   
   public int getScore(){
