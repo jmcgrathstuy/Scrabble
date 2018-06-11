@@ -58,11 +58,11 @@ public void setup(){
 }
 public void mouseReleased(){
   if(  mouseX > 536 && mouseX < 663 && ( mouseY > 102 && mouseY < 182)){
-    println(brd.verifyInt(dict));
+    //println(brd.verifyInt(dict));
    //if( brd.verify( dict)){
    //if( brd.verHoriz(dict, 0, 0)){
    if( brd.verifyInt(dict) > 0){
-      p.addScore(turnPoints);
+      //p.addScore(turnPoints);
       for( Piece[] pa : brd.getBoard()){
         for( Piece pi: pa){
           if( pi != null){
@@ -73,6 +73,15 @@ public void mouseReleased(){
       tadd = 1;
       canStart = true;
       canEnd = false;
+      for( String s : brd.allWords){
+       /* if( brd.setWords.indexOf(s) == -1){
+          p.addScore( brd.wordValue(s));
+        }*/
+        brd.setWords.add(s);
+      }
+      p.addScore(turnPoints);
+
+      
    }else{
      for( Piece[] pa : brd.getBoard()){
         for( Piece pi: pa){
@@ -130,7 +139,7 @@ public void draw(){
   if( ((( (((mouseY < 526)&&(mouseY>1))&&((mouseX < 524)&&(mouseX > 1))) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseY / 35][mouseX / 35] == null) && !canStart){
     int rSpot = mouseY / 35;
     int cSpot = mouseX / 35;
-    if( brd.specialty(rSpot, cSpot) != 0){
+    /*if( brd.specialty(rSpot, cSpot) != 0){
       if( brd.specialty(rSpot, cSpot) == 1){
         turnPoints += selectedPiece.getValue() * 2;
       }
@@ -139,7 +148,7 @@ public void draw(){
       }
     }else{
       turnPoints += selectedPiece.getValue();
-    }
+    }*/
     //NOTE!! THE ABOVE WAY OF ADDING POINTS PROBABLY WON'T WORK WITH WORD SCORE MODIFIERS (THEN AGAIN THE CURRENT SCORING SYSTEM IS A PLACEHOLDER SO WHO KNOWS IF THAT MATTERS)
     brd.placePiece(p.getHand().remove(selectedPieceSpot), rSpot, cSpot);
     //tempBrd.placePiece(p.getHand().remove(selectedPieceSpot), mouseY / 35, mouseX / 35);
@@ -149,6 +158,13 @@ public void draw(){
   
   //START TURN
   if( ((  mouseX > 536 && mouseX < 663 && ( mouseY > 9 && mouseY < 89)) && mousePressed)){
+    for( int rc = 0; rc < 15; rc++){
+      for( int cc = 0; cc < 15; cc++){
+        if( brd.getBoard()[rc][cc] != null){
+          tempBrd.getBoard()[rc][cc] = brd.getBoard()[rc][cc];
+        }
+      }
+    }
     turnPoints = 0;
     turn += tadd;
     tadd = 0;
@@ -191,9 +207,9 @@ public void draw(){
   //println(turnPoints);
   //println(p.getScore());
     //println(brd.verifyInt(dict));
-    for( int i = 0; i < brd.setWords.size(); i++){
-      println(brd.setWords.get(i));
-    }
+    //for( int i = 0; i < brd.setWords.size(); i++){
+   //   println(brd.setWords.get(i));
+  //  }
   
   
   
@@ -300,22 +316,38 @@ public class Player{
 
 public class Board{
 
-    private Piece[][] brd;
+    private Piece[][] brd, tmpBoard;
     public ArrayList<String> setWords;
+    public ArrayList<String> allWords;
+    private int score, bonus;
 
     //Constructs a 15x15 board
     public Board(){
       brd = new Piece[15][15];
+      tmpBoard = new Piece[15][15];
       setWords = new ArrayList<String>();
+      allWords = new ArrayList<String>();
     }
     //Returns a boolean, true if brd[x][y] does not contain a piece, false otherwise.
     public boolean isEmpty( int x, int y){
       return brd[x][y] == null;
     }
+    public boolean isEmptyTmp( int x, int y){
+      return tmpBoard[x][y] == null;
+    }
     
     //Returns brd
     public Piece[][] getBoard(){
       return brd;
+    }
+    public int getScore(){
+      return score;
+    }
+    public void setScore(int i){
+      score = i;
+    }
+    public void addScore(int i){
+      score += i;
     }
     
     /*public boolean verify( ArrayList<String> d){
@@ -376,7 +408,7 @@ public class Board{
         return r;
     }
     
-    public boolean verHoriz( ArrayList<String> d, int r, int c){
+   /* public boolean verHoriz( ArrayList<String> d, int r, int c){
       String s = "";
       for( int cs = c; cs < 15 && !isEmpty( r, cs); cs++){
         s += brd[r][cs].getLetter();
@@ -390,39 +422,106 @@ public class Board{
         s += brd[rs][c].getLetter();
       }
       return ( d.indexOf(s) != -1);
-    }
+    }*/
     
     
     
     //0 if single letter, -999 if fake word, 1 if valid word.
     public int verHorizInt( ArrayList<String> d, int r, int c){
+      int wordVal = 0;
+      int wordMult = 1;
       String s = "";
+      boolean hasNoFriends = true;
       for( int cs = c; cs < 15 && !isEmpty( r, cs); cs++){
         s += brd[r][cs].getLetter();
-      }
+          if( specialty(r, cs) == 1 && isEmptyTmp(r, cs)){
+            wordVal += brd[r][cs].getValue() * 2;
+          }else
+          if( specialty(r, cs) == 2 && isEmptyTmp(r, cs)){
+            wordVal += brd[r][cs].getValue();
+            wordMult *= 2;
+          }else
+          if( specialty(r, cs) == 3 && isEmptyTmp(r, cs)){
+            wordVal += brd[r][cs].getValue() * 3;
+          }else
+          if( specialty(r, cs) == 4 && isEmptyTmp(r, cs)){
+            wordVal += brd[r][cs].getValue();
+            wordMult *= 3;
+          }else{
+          wordVal += brd[r][cs].getValue();
+        }
+        println( wordVal + ", " + wordMult);
+      }  
       if( s.length() == 1){
-        return 0;
+        if( r != 0){
+          if( !isEmpty(r - 1, c )){
+            hasNoFriends = false;
+          }
+        }
+        if( r != 14){
+          if( !isEmpty(r + 1, c)){
+            hasNoFriends = false;
+          }
+        }
+        if( c != 0){
+          if( !isEmpty(r, c - 1)){
+            hasNoFriends = false;
+          }
+        }
+        if( c != 14){
+          if( !isEmpty(r, c + 1)){
+            hasNoFriends = false;
+          }
+        }
+        if( hasNoFriends){
+          return -999;
+        }else{
+          return 0;
+        }
       }
       if( d.indexOf(s) == -1){
           return -999;
       }else{
-        setWords.add(s);
+        if( setWords.indexOf(s) == -1){
+          allWords.add(s);
+          println(wordVal * wordMult);
+          turnPoints += wordVal * wordMult;
+        }
         return 1;
       }
     }
     
     public int verVertInt( ArrayList<String> d, int r, int c){
+      int wordVal = 0;
+      int wordMult = 1;
       String s = "";
       for( int rs = r; rs < 15 && !isEmpty( rs, c); rs++){
         s += brd[rs][c].getLetter();
-      }
+          if( specialty(rs, c) == 1 && isEmptyTmp(rs, c)){
+            wordVal += brd[rs][c].getValue() * 2;
+          }else
+          if( specialty(rs, c) == 2 && isEmptyTmp(rs, c)){
+            wordMult *= 2;
+          }else
+          if( specialty(rs, c) == 3 && isEmptyTmp(rs, c)){
+            wordVal += brd[rs][c].getValue() * 3;
+          }else
+          if( specialty(rs, c) == 4 && isEmptyTmp(rs, c)){
+            wordMult *= 3;
+          }else{
+          wordVal += brd[rs][c].getValue();
+        }
+      }  
       if( s.length() == 1){
         return 0;
       }
       if( d.indexOf(s) == -1){
           return -999;
       }else{
-        setWords.add(s);
+        if( setWords.indexOf(s) == -1){
+          allWords.add(s);
+          turnPoints += wordVal * wordMult;
+        }
         return 1;
       }
     }
@@ -462,20 +561,28 @@ public class Board{
     
     //If space is empty, places said piece in brd[r][c]. Otherwise returns false.
     public boolean placePiece(Piece p, int r, int c){
-  if( !isEmpty(r, c)){
-      return false;
-  }else{
-      brd[r][c] = p;
-      p.setR(r);
-      p.setC(c);
-      return true;
-  }
+      if( !isEmpty(r, c)){
+        return false;
+      }else{
+        brd[r][c] = p;
+        p.setR(r);
+        p.setC(c);
+        return true;
+      }  
     }
     //Removes and returns the piece at the brd[x][y]
     public Piece removePiece(int x, int y){
   Piece a = brd[x][y];
         brd[x][y] = null;
   return a;
+    }
+    public boolean placePieceTmp(Piece p, int r, int c){
+      if( !isEmpty(r, c)){
+        return false;
+      }else{
+        tmpBoard[r][c] = p;
+        return true;
+      }  
     }
 
     //toString
