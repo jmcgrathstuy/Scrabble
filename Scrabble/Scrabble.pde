@@ -190,7 +190,10 @@ public void draw(){
   }*/
   //println(turnPoints);
   //println(p.getScore());
-    println(brd.verifyInt(dict));
+    //println(brd.verifyInt(dict));
+    for( int i = 0; i < brd.setWords.size(); i++){
+      println(brd.setWords.get(i));
+    }
   
   
   
@@ -298,10 +301,12 @@ public class Player{
 public class Board{
 
     private Piece[][] brd;
+    public ArrayList<String> setWords;
 
     //Constructs a 15x15 board
     public Board(){
-  brd = new Piece[15][15];
+      brd = new Piece[15][15];
+      setWords = new ArrayList<String>();
     }
     //Returns a boolean, true if brd[x][y] does not contain a piece, false otherwise.
     public boolean isEmpty( int x, int y){
@@ -401,6 +406,7 @@ public class Board{
       if( d.indexOf(s) == -1){
           return -999;
       }else{
+        setWords.add(s);
         return 1;
       }
     }
@@ -416,9 +422,39 @@ public class Board{
       if( d.indexOf(s) == -1){
           return -999;
       }else{
+        setWords.add(s);
         return 1;
       }
     }
+    
+    public int wordValue(String w){
+      int v = 0;
+      for( int i = 0; i < w.length(); i++){
+        if( w.charAt(i) == 'A' || w.charAt(i) == 'E' || w.charAt(i) == 'I' || w.charAt(i) == 'O' || w.charAt(i) == 'U' || w.charAt(i) == 'N' || w.charAt(i) == 'R' || w.charAt(i) == 'T' || w.charAt(i) == 'L' || w.charAt(i) == 'S'){
+          v += 1;
+        }
+        if( w.charAt(i) == 'D' || w.charAt(i) == 'G'){
+          v += 2;
+        }
+        if( w.charAt(i) == 'B' || w.charAt(i) == 'C' || w.charAt(i) == 'M' || w.charAt(i) == 'P'){
+          v += 3;
+        }
+        if( w.charAt(i) == 'F' || w.charAt(i) == 'H' || w.charAt(i) == 'V' || w.charAt(i) == 'W' || w.charAt(i) == 'Y'){
+          v += 4;
+        }
+        if( w.charAt(i) == 'K'){
+          v += 5;
+        }
+        if( w.charAt(i) == 'J' || w.charAt(i) == 'X'){
+          v += 8;
+        }
+        if( w.charAt(i) == 'Q' || w.charAt(i) == 'Z'){
+          v += 10;
+        }
+      }
+      return v;
+    }
+        
         
       
 
