@@ -405,6 +405,9 @@ public class Board{
         }
       }
       }
+      if( turn == 1 && isEmpty(7,7)){
+        r += -999;
+      }
         return r;
     }
     
