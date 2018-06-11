@@ -57,7 +57,7 @@ public void setup(){
   
 }
 public void mouseReleased(){
-  if(  mouseX > 536 && mouseX < 663 && ( mouseY > 102 && mouseY < 182)){
+  if( ( mouseX > 536 && mouseX < 663 && ( mouseY > 102 && mouseY < 182)) && p.getHand().size() < 7){
     //println(brd.verifyInt(dict));
    //if( brd.verify( dict)){
    //if( brd.verHoriz(dict, 0, 0)){
@@ -502,12 +502,14 @@ public class Board{
           }else
           if( specialty(rs, c) == 2 && isEmptyTmp(rs, c)){
             wordMult *= 2;
+            wordVal += brd[rs][c].getValue();
           }else
           if( specialty(rs, c) == 3 && isEmptyTmp(rs, c)){
             wordVal += brd[rs][c].getValue() * 3;
           }else
           if( specialty(rs, c) == 4 && isEmptyTmp(rs, c)){
             wordMult *= 3;
+            wordVal += brd[rs][c].getValue();
           }else{
           wordVal += brd[rs][c].getValue();
         }
