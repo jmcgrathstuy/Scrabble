@@ -57,7 +57,7 @@ public void setup(){
   
 }
 public void mouseReleased(){
-  if( ( mouseX > 536 && mouseX < 663 && ( mouseY > 102 && mouseY < 182)) && p.getHand().size() < 7){
+  if( ( mouseX > 536 && mouseX < 663 && ( mouseY > 102 && mouseY < 182)) && p.getHand().size() < 7 && canEnd){
     //println(brd.verifyInt(dict));
    //if( brd.verify( dict)){
    //if( brd.verHoriz(dict, 0, 0)){
@@ -104,7 +104,7 @@ public void mouseReleased(){
    }
     turnPoints = 0;
   }
-  if( ( mouseX > 536 && mouseX < 663 && ( mouseY > 195 && mouseY < 276)) && p.getHand().size() == 7){
+  if( ( mouseX > 536 && mouseX < 663 && ( mouseY > 195 && mouseY < 276)) && p.getHand().size() == 7 && canEnd){
     delay(2500);
     tadd = 1;
     canStart = true;
