@@ -1,9 +1,10 @@
 
 Board brd, tempBrd;
 Sack sck;
-Player p;
+Player p, playerOne, playerTwo, playerThree, playerFour;
+ArrayList<Player> players;
 PFont f;
-int boxWidth, boxHeight;
+int boxWidth, boxHeight, scr, numPlayers, curPlayer;
 Piece selectedPiece;
 int selectedPieceSpot, turnPoints, w, turn, tadd;
 PImage bg;
@@ -24,12 +25,11 @@ boolean canStart, canEnd;
 
 public void setup(){
   size(673, 600);
-  bg = loadImage("WWFBoard.png");
-  background(bg);
   sck = new Sack();
   brd = new Board();
   tempBrd = new Board();
-  p = new Player("Jack");
+  players = new ArrayList<Player>();
+ // p = new Player("Jack");
   dict = new ArrayList<String>();
   reader = createReader("dict.txt");
   //p.fillHand(sck);
@@ -39,6 +39,7 @@ public void setup(){
   turnPoints = 0;
   turn = 0;
   tadd = 1;
+  scr = 0;
   canStart = true;
   for( int i = 0; i < 58109; i++){
   try{
@@ -48,7 +49,6 @@ public void setup(){
     line = null;
   }
   if( line == null){
-    println( "AAA" + line == null);
     noLoop();
   } else{
     dict.add(line);
@@ -62,7 +62,7 @@ public void mouseReleased(){
    //if( brd.verify( dict)){
    //if( brd.verHoriz(dict, 0, 0)){
    if( brd.verifyInt(dict) > 0){
-      //p.addScore(turnPoints);
+      delay(2500);
       for( Piece[] pa : brd.getBoard()){
         for( Piece pi: pa){
           if( pi != null){
@@ -80,6 +80,13 @@ public void mouseReleased(){
         brd.setWords.add(s);
       }
       p.addScore(turnPoints);
+      if( curPlayer == numPlayers - 1){
+        curPlayer = 0;
+      }else{
+        curPlayer++;
+      }
+      p = players.get(curPlayer);
+      
 
       
    }else{
@@ -97,17 +104,73 @@ public void mouseReleased(){
    }
     turnPoints = 0;
   }
+  if( ( mouseX > 536 && mouseX < 663 && ( mouseY > 195 && mouseY < 276)) && p.getHand().size() == 7){
+    delay(2500);
+    tadd = 1;
+    canStart = true;
+    canEnd = false;
+    if( curPlayer == numPlayers - 1){
+        curPlayer = 0;
+    }else{
+      curPlayer++;
+    }
+    p = players.get(curPlayer);
+  }
+  
 }
 
+void keyPressed(){
+  boolean canStart = false;
+  if( keyCode == CONTROL && scr == 0){
+    scr++;
+  }
+  if( key == '1' || key == '2' || key == '3' || key == '4'){
+      canStart = true;
+      numPlayers = Character.getNumericValue(key);
+      for( int i = 0; i < numPlayers; i++){
+        if( i == 0){
+          playerOne = new Player("Player 1");
+          players.add(playerOne);
+          p = playerOne;
+          curPlayer = 0;
+        }
+        if( i == 1){
+          playerTwo = new Player("Player 2");
+          players.add(playerTwo);
+        }
+        if( i == 2){
+          playerThree = new Player("Player 3");
+          players.add(playerThree);
+        }
+        if( i == 3){
+          playerFour = new Player("Player 4");
+          players.add(playerFour);
+        }
+    }
+  }
+  }
+  
+
 public void draw(){
+  switch(scr){
+    case 0:
+    textSize(30);
+    text("Press the key that corresponds to the number\n of players (1-4), then press CTRL", 0, 100);
+    text("To end the game and crown a winner, press\n TAB", 0, 300);
+    break;
+    case 1:
+  bg = loadImage("WWFBoard.png");
   background(bg);
   int a = 5;
   //int a = 0;
   textFont(f, 16);
   fill(0);
   textSize(18);
-  text( "Turn: " + turn, 545, 475);
-  text( "Score: " + p.getScore(), 545, 500);
+  text( "You're up,", 545, 345);
+  text( p.getName() + "!", 545, 364);
+  text( "Turn: " + turn, 545, 295);
+  text( "Tiles left: " + sck.size(), 545, 315);
+  text( "Score: " + p.getScore(), 545, 395);
   for( Piece s : p.getHand()){
     s.setX( a);
     s.setY( 532);
@@ -222,9 +285,9 @@ public void draw(){
     println("yeet" + ((( (mouseY < 526) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseY / 35][mouseX / 35] == null));
   }*/
   
-  
+  break;
 }
-
+  }
 
 
     //Given a coordinate returns the relevant x or y spot in the array
@@ -319,7 +382,7 @@ public class Board{
     private Piece[][] brd, tmpBoard;
     public ArrayList<String> setWords;
     public ArrayList<String> allWords;
-    private int score, bonus;
+    private int score;
 
     //Constructs a 15x15 board
     public Board(){
@@ -453,7 +516,7 @@ public class Board{
           }else{
           wordVal += brd[r][cs].getValue();
         }
-        println( wordVal + ", " + wordMult);
+        //println( wordVal + ", " + wordMult);
       }  
       if( s.length() == 1){
         if( r != 0){
