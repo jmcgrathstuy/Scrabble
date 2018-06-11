@@ -56,6 +56,39 @@ public void setup(){
   }
   
 }
+public void mouseReleased(){
+  if(  mouseX > 536 && mouseX < 663 && ( mouseY > 102 && mouseY < 182)){
+    println(brd.verifyInt(dict));
+   //if( brd.verify( dict)){
+   //if( brd.verHoriz(dict, 0, 0)){
+   if( brd.verifyInt(dict) > 0){
+      p.addScore(turnPoints);
+      for( Piece[] pa : brd.getBoard()){
+        for( Piece pi: pa){
+          if( pi != null){
+            pi.setRemovable(false);
+          }
+        }
+      }
+      tadd = 1;
+      canStart = true;
+      canEnd = false;
+   }else{
+     for( Piece[] pa : brd.getBoard()){
+        for( Piece pi: pa){
+          if( pi != null){
+            if( pi.isRemovable()){
+              p.addPiece(brd.removePiece(pi.getR(), pi.getC()));
+            }
+          }
+        }
+      }
+     
+     
+   }
+    turnPoints = 0;
+  }
+}
 
 public void draw(){
   background(bg);
@@ -94,7 +127,7 @@ public void draw(){
     }
   }
   //PIECE PLACEMENT
-  if( ((( (((mouseY < 526)&&(mouseY>1))&&((mouseX < 524)&&(mouseX > 1))) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseY / 35][mouseX / 35] == null) /*&& !canStart*/){
+  if( ((( (((mouseY < 526)&&(mouseY>1))&&((mouseX < 524)&&(mouseX > 1))) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseY / 35][mouseX / 35] == null) && !canStart){
     int rSpot = mouseY / 35;
     int cSpot = mouseX / 35;
     if( brd.specialty(rSpot, cSpot) != 0){
@@ -124,9 +157,9 @@ public void draw(){
     canEnd = true;
   }
   //END TURN
-  if( ((  mouseX > 536 && mouseX < 663 && ( mouseY > 102 && mouseY < 182)) && mousePressed)){
+  /*if( ((  mouseX > 536 && mouseX < 663 && ( mouseY > 102 && mouseY < 182)) && mousePressed)){
     println(brd.verifyInt(dict));
-   // if( brd.verify( dict)){
+   //if( brd.verify( dict)){
    //if( brd.verHoriz(dict, 0, 0)){
    if( brd.verifyInt(dict) > 0){
       p.addScore(turnPoints);
@@ -154,7 +187,7 @@ public void draw(){
      
    }
     turnPoints = 0;
-  }
+  }*/
   //println(turnPoints);
   //println(p.getScore());
     println(brd.verifyInt(dict));
