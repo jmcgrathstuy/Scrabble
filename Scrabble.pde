@@ -21,7 +21,6 @@ boolean canStart, canEnd;
 //PIECE
 //SACK
 
-
 public void setup(){
   size(673, 600);
   sck = new Sack();
@@ -55,6 +54,7 @@ public void setup(){
   }
   
 }
+
 public void mouseReleased(){
   if( ( mouseX > 536 && mouseX < 663 && ( mouseY > 102 && mouseY < 182)) && p.getHand().size() < 7 && canEnd){
     //println(brd.verifyInt(dict));
