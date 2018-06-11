@@ -127,6 +127,7 @@ public void draw(){
         }
       }
      
+     
    }
     turnPoints = 0;
   }
