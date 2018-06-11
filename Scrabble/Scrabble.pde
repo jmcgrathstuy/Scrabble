@@ -1,7 +1,6 @@
-
 Board brd, tempBrd;
 Sack sck;
-Player p, playerOne, playerTwo, playerThree, playerFour;
+Player p, playerOne, playerTwo, playerThree, playerFour, winner;
 ArrayList<Player> players;
 PFont f;
 int boxWidth, boxHeight, scr, numPlayers, curPlayer;
@@ -120,8 +119,17 @@ public void mouseReleased(){
 }
 
 void keyPressed(){
-  boolean canStart = false;
   if( keyCode == CONTROL && scr == 0){
+    scr++;
+  }
+  if( key == TAB){
+    int highest = 0;
+    for( Player pe : players){
+      if( pe.getScore() >= highest){
+        highest = pe.getScore();
+        winner = pe;
+      }
+    }
     scr++;
   }
   if( key == '1' || key == '2' || key == '3' || key == '4'){
@@ -149,6 +157,7 @@ void keyPressed(){
     }
   }
   }
+  
   
 
 public void draw(){
@@ -235,74 +244,23 @@ public void draw(){
     canStart = false;
     canEnd = true;
   }
-  //END TURN
-  /*if( ((  mouseX > 536 && mouseX < 663 && ( mouseY > 102 && mouseY < 182)) && mousePressed)){
-    println(brd.verifyInt(dict));
-   //if( brd.verify( dict)){
-   //if( brd.verHoriz(dict, 0, 0)){
-   if( brd.verifyInt(dict) > 0){
-      p.addScore(turnPoints);
-      for( Piece[] pa : brd.getBoard()){
-        for( Piece pi: pa){
-          if( pi != null){
-            pi.setRemovable(false);
-          }
-        }
-      }
-      tadd = 1;
-      canStart = true;
-      canEnd = false;
-   }else{
-     for( Piece[] pa : brd.getBoard()){
-        for( Piece pi: pa){
-          if( pi != null){
-            if( pi.isRemovable()){
-              p.addPiece(brd.removePiece(pi.getR(), pi.getC()));
-            }
-          }
-        }
-      }
-     
-     
-   }
-    turnPoints = 0;
-  }*/
-  //println(turnPoints);
-  //println(p.getScore());
-    //println(brd.verifyInt(dict));
-    //for( int i = 0; i < brd.setWords.size(); i++){
-   //   println(brd.setWords.get(i));
-  //  }
-  
-  
-  
-  //println("selectedPiece: " + selectedPiece);
-  //println("[0][0]: " + brd.getBoard()[0][0]);
-  //println("[0][1]: " + brd.getBoard()[0][1]);
-  
-  /*if(mousePressed){
-    println("" + (mouseY / 35) +" "+ (mouseX / 35));
-    println("yeet" + ((( (mouseY < 526) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseY / 35][mouseX / 35] == null));
-  }*/
   
   break;
-}
+  case 2:
+  background(255, 172, 249);
+  textFont(f, 16);
+  fill(0);
+  textSize(24);
+  text( "Congratulations, " + winner.getName() + "!", 175, 30);
+  int yc = 130;
+  for( Player pe : players){
+    text( pe.getName() + ": " + pe.getScore() + " points", 200, yc);
+    yc += 45;
   }
-
-
-    //Given a coordinate returns the relevant x or y spot in the array
-    //public static int relSpot(int coord){
-    //  return coord / 35;
-    //}
-
-
-
-
-
-
-
-
-
+  break;
+  
+ }
+}
 //PLAYER PLAYER PLAYER
 //PLAYER PLAYER PLAYER
 
