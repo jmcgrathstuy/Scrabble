@@ -1,11 +1,15 @@
-Board brd;
+
+Board brd, tempBrd;
 Sack sck;
 Player p;
 PFont f;
 int boxWidth, boxHeight;
 Piece selectedPiece;
-int selectedPieceSpot, turnPoints;
+int selectedPieceSpot, turnPoints, w, turn;
 PImage bg;
+BufferedReader reader;
+String line;
+ArrayList<String> dict;
 
 //SETUP
 //DRAW
@@ -23,12 +27,30 @@ public void setup(){
   background(bg);
   sck = new Sack();
   brd = new Board();
+  tempBrd = new Board();
   p = new Player("Jack");
+  dict = new ArrayList<String>();
+  reader = createReader("dict.txt");
   //p.fillHand(sck);
   f = createFont("Arial", 16, true);
   boxWidth = 35;
   boxHeight = 35;
   turnPoints = 0;
+  turn = 0;
+  for( int i = 0; i < 58109; i++){
+  try{
+    line = reader.readLine();
+  } catch (IOException e){
+    e.printStackTrace();
+    line = null;
+  }
+  if( line == null){
+    println( "AAA" + line == null);
+    noLoop();
+  } else{
+    dict.add(line);
+  }
+  }
   
 }
 
@@ -55,20 +77,21 @@ public void draw(){
     for( int cc = 0; cc < 15; cc++){
       if( brd.getBoard()[rc][cc] == null){
         fill( 0, 0.0);
-        rect( rc * boxWidth, cc * boxHeight, boxWidth, boxHeight);
+        rect( cc * boxWidth, rc * boxHeight, boxWidth, boxHeight);
       }
       else{
-        brd.getBoard()[rc][cc].setY(cc * 35);
-        brd.getBoard()[rc][cc].setX(rc * 35);
+        brd.getBoard()[rc][cc].setX(cc * 35);
+        brd.getBoard()[rc][cc].setY(rc * 35);
         brd.getBoard()[rc][cc].displaySmall();
       }
     }
   }
   //PIECE PLACEMENT
-  if( (( (((mouseY < 526)&&(mouseY>1))&&((mouseX < 524)&&(mouseX > 1))) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseX / 35][mouseY / 35] == null){
+  if( (( (((mouseY < 526)&&(mouseY>1))&&((mouseX < 524)&&(mouseX > 1))) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseY / 35][mouseX / 35] == null){
     turnPoints += selectedPiece.getValue();
     //NOTE!! THE ABOVE WAY OF ADDING POINTS PROBABLY WON'T WORK WITH WORD SCORE MODIFIERS (THEN AGAIN THE CURRENT SCORING SYSTEM IS A PLACEHOLDER SO WHO KNOWS IF THAT MATTERS)
-    brd.placePiece(p.getHand().remove(selectedPieceSpot), mouseX / 35, mouseY / 35);
+    brd.placePiece(p.getHand().remove(selectedPieceSpot), mouseY / 35, mouseX / 35);
+    //tempBrd.placePiece(p.getHand().remove(selectedPieceSpot), mouseY / 35, mouseX / 35);
     selectedPiece = null;
     selectedPieceSpot = 0;
   }
@@ -80,10 +103,37 @@ public void draw(){
   }
   //END TURN
   if( ((  mouseX > 536 && mouseX < 663 && ( mouseY > 102 && mouseY < 182)) && mousePressed)){
-    p.addScore(turnPoints);
+    println(brd.verifyInt(dict));
+   // if( brd.verify( dict)){
+   //if( brd.verHoriz(dict, 0, 0)){
+   if( brd.verifyInt(dict) > 0){
+      p.addScore(turnPoints);
+      for( Piece[] pa : brd.getBoard()){
+        for( Piece pi: pa){
+          if( pi != null){
+            pi.setRemovable(false);
+          }
+        }
+      }
+      turn += 1;
+   }else{
+     for( Piece[] pa : brd.getBoard()){
+        for( Piece pi: pa){
+          if( pi != null){
+            if( pi.isRemovable()){
+              p.addPiece(brd.removePiece(pi.getR(), pi.getC()));
+            }
+          }
+        }
+      }
+     
+   }
     turnPoints = 0;
   }
-  println(p.getScore());
+  //println(turnPoints);
+  //println(p.getScore());
+  println(brd);
+  
   
   
   //println("selectedPiece: " + selectedPiece);
@@ -197,22 +247,133 @@ public class Board{
     }
     //Returns a boolean, true if brd[x][y] does not contain a piece, false otherwise.
     public boolean isEmpty( int x, int y){
-  return brd[x][y] == null;
+      return brd[x][y] == null;
     }
     
     //Returns brd
     public Piece[][] getBoard(){
       return brd;
     }
+    
+    /*public boolean verify( ArrayList<String> d){
+      boolean b = true;
+      for( Piece[] pa : brd){
+        for( Piece p: pa){
+          if( p != null){
+          if( p.getC() == 0){
+            if( !verHoriz( d, p.getR(), p.getC())){
+              b = false;
+            }
+          }else{
+            if(isEmpty(p.getR(), p.getC() - 1)){
+              if( !verHoriz( d, p.getR(), p.getC())){
+                b = false;
+              }
+            }
+          }
+          if( p.getR() == 0){
+            if( !verVert( d, p.getR(), p.getC())){
+              b = false;
+            }
+          }else{
+            if(isEmpty(p.getR() - 1, p.getC())){
+              if( !verVert( d, p.getR(), p.getC())){
+              b = false;
+            }
+            }
+          }
+          }
+          }
+        }
+        return b;
+      }*/
+      
+    public int verifyInt( ArrayList<String> d){
+      int r = 0;
+      for( Piece[] pa : brd){
+        for( Piece p: pa){
+          if( p != null){
+          if( p.getC() == 0){
+            r += verHorizInt( d, p.getR(), p.getC());
+          }else{
+            if(isEmpty(p.getR(), p.getC() - 1)){
+              r += verHorizInt( d, p.getR(), p.getC());
+            }
+          }
+          if( p.getR() == 0){
+            r += verVertInt( d, p.getR(), p.getC());
+          }else{
+            if(isEmpty(p.getR() - 1, p.getC())){
+              r += verVertInt( d, p.getR(), p.getC());
+            }
+          }
+        }
+      }
+      }
+        return r;
+    }
+    
+    public boolean verHoriz( ArrayList<String> d, int r, int c){
+      String s = "";
+      for( int cs = c; cs < 15 && !isEmpty( r, cs); cs++){
+        s += brd[r][cs].getLetter();
+      }
+      return ( d.indexOf(s) != -1);
+    }
+    
+    public boolean verVert( ArrayList<String> d, int r, int c){
+      String s = "";
+      for( int rs = r; rs < 15 && !isEmpty( rs, c); rs++){
+        s += brd[rs][c].getLetter();
+      }
+      return ( d.indexOf(s) != -1);
+    }
+    
+    
+    
+    //0 if single letter, -999 if fake word, 1 if valid word.
+    public int verHorizInt( ArrayList<String> d, int r, int c){
+      String s = "";
+      for( int cs = c; cs < 15 && !isEmpty( r, cs); cs++){
+        s += brd[r][cs].getLetter();
+      }
+      if( s.length() == 1){
+        return 0;
+      }
+      if( d.indexOf(s) == -1){
+          return -999;
+      }else{
+        return 1;
+      }
+    }
+    
+    public int verVertInt( ArrayList<String> d, int r, int c){
+      String s = "";
+      for( int rs = r; rs < 15 && !isEmpty( rs, c); rs++){
+        s += brd[rs][c].getLetter();
+      }
+      if( s.length() == 1){
+        return 0;
+      }
+      if( d.indexOf(s) == -1){
+          return -999;
+      }else{
+        return 1;
+      }
+    }
+        
+      
 
     
     
-    //If space is empty, places said piece in brd[x][y]. Otherwise returns false.
-    public boolean placePiece(Piece p, int x, int y){
-  if( !isEmpty(x, y)){
+    //If space is empty, places said piece in brd[r][c]. Otherwise returns false.
+    public boolean placePiece(Piece p, int r, int c){
+  if( !isEmpty(r, c)){
       return false;
   }else{
-      brd[x][y] = p;
+      brd[r][c] = p;
+      p.setR(r);
+      p.setC(c);
       return true;
   }
     }
@@ -433,15 +594,18 @@ public class Board{
 public class Piece{
 
     private char letter;
-    private int value, x, y;
+    private int value, x, y, r, c;
     //Defaults to true, is set to false when the turn in which it is placed ends
     private boolean removable;
+    
 
 
     public Piece( char let, int val){
   letter = let;
   value = val;
   removable = true;
+  r = 0;
+  c = 0;
     }
     public String toString(){
   return ("Letter: " + letter + ", Value: " + value);
@@ -463,8 +627,8 @@ public class Piece{
     public boolean isRemovable(){
   return removable;
     }
-    public void swapRemovable(){
-  removable = !removable;
+    public void setRemovable(boolean b){
+      removable = b;
     }
     public void setX(int in){
       x = in;
@@ -477,6 +641,18 @@ public class Piece{
     }
     public int getY(){
       return y;
+    }
+    public void setR(int in){
+      r = in;
+    }
+    public void setC(int in){
+      c = in;
+    }
+    public int getR(){
+      return r;
+    }
+    public int getC(){
+      return c;
     }
     public void display(){
       fill(252, 217, 103);
@@ -631,3 +807,5 @@ public class Sack{
   }
  }
 }
+
+//BELOW THIS POINT LIES THE DICTIONARY of all 58,109 ACCEPTABLE WORDS
