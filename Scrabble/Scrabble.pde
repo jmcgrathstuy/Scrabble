@@ -5,11 +5,12 @@ Player p;
 PFont f;
 int boxWidth, boxHeight;
 Piece selectedPiece;
-int selectedPieceSpot, turnPoints, w, turn;
+int selectedPieceSpot, turnPoints, w, turn, tadd;
 PImage bg;
 BufferedReader reader;
 String line;
 ArrayList<String> dict;
+boolean canStart, canEnd;
 
 //SETUP
 //DRAW
@@ -37,6 +38,8 @@ public void setup(){
   boxHeight = 35;
   turnPoints = 0;
   turn = 0;
+  tadd = 1;
+  canStart = true;
   for( int i = 0; i < 58109; i++){
   try{
     line = reader.readLine();
@@ -59,6 +62,10 @@ public void draw(){
   int a = 5;
   //int a = 0;
   textFont(f, 16);
+  fill(0);
+  textSize(18);
+  text( "Turn: " + turn, 545, 475);
+  text( "Score: " + p.getScore(), 545, 500);
   for( Piece s : p.getHand()){
     s.setX( a);
     s.setY( 532);
@@ -87,10 +94,21 @@ public void draw(){
     }
   }
   //PIECE PLACEMENT
-  if( (( (((mouseY < 526)&&(mouseY>1))&&((mouseX < 524)&&(mouseX > 1))) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseY / 35][mouseX / 35] == null){
-    turnPoints += selectedPiece.getValue();
+  if( ((( (((mouseY < 526)&&(mouseY>1))&&((mouseX < 524)&&(mouseX > 1))) && mousePressed) && selectedPiece != null) && brd.getBoard()[mouseY / 35][mouseX / 35] == null) /*&& !canStart*/){
+    int rSpot = mouseY / 35;
+    int cSpot = mouseX / 35;
+    if( brd.specialty(rSpot, cSpot) != 0){
+      if( brd.specialty(rSpot, cSpot) == 1){
+        turnPoints += selectedPiece.getValue() * 2;
+      }
+      if( brd.specialty(rSpot, cSpot) == 3){
+        turnPoints += selectedPiece.getValue() * 3;
+      }
+    }else{
+      turnPoints += selectedPiece.getValue();
+    }
     //NOTE!! THE ABOVE WAY OF ADDING POINTS PROBABLY WON'T WORK WITH WORD SCORE MODIFIERS (THEN AGAIN THE CURRENT SCORING SYSTEM IS A PLACEHOLDER SO WHO KNOWS IF THAT MATTERS)
-    brd.placePiece(p.getHand().remove(selectedPieceSpot), mouseY / 35, mouseX / 35);
+    brd.placePiece(p.getHand().remove(selectedPieceSpot), rSpot, cSpot);
     //tempBrd.placePiece(p.getHand().remove(selectedPieceSpot), mouseY / 35, mouseX / 35);
     selectedPiece = null;
     selectedPieceSpot = 0;
@@ -99,7 +117,11 @@ public void draw(){
   //START TURN
   if( ((  mouseX > 536 && mouseX < 663 && ( mouseY > 9 && mouseY < 89)) && mousePressed)){
     turnPoints = 0;
+    turn += tadd;
+    tadd = 0;
     p.fillHand(sck);
+    canStart = false;
+    canEnd = true;
   }
   //END TURN
   if( ((  mouseX > 536 && mouseX < 663 && ( mouseY > 102 && mouseY < 182)) && mousePressed)){
@@ -115,7 +137,9 @@ public void draw(){
           }
         }
       }
-      turn += 1;
+      tadd = 1;
+      canStart = true;
+      canEnd = false;
    }else{
      for( Piece[] pa : brd.getBoard()){
         for( Piece pi: pa){
@@ -133,7 +157,7 @@ public void draw(){
   }
   //println(turnPoints);
   //println(p.getScore());
-  println(brd);
+    println(brd.verifyInt(dict));
   
   
   
